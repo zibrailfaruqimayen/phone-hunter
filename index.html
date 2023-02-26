@@ -36,6 +36,9 @@
         <div id="no-found-message" class="mt-4 d-none">
           <h3 class="text-warning">No Phone Found. Please try a new search</h3>
         </div>
+        <div id="show-all" class="text-center d-none">
+          <div id="btn-show-all" class="btn btn-primary">Show All</div>
+        </div>
       </section>
       <!-- loader -->
       <section id="loader" class="d-none">
@@ -45,6 +48,41 @@
         >
           <div class="spinner-border text-success" role="status">
             <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      </section>
+      <!-- modal container -->
+      <section>
+        <!-- Modal -->
+        <div
+          class="modal fade"
+          id="phoneDetailModal"
+          tabindex="-1"
+          aria-labelledby="phoneDetailModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="phoneDetailModalLabel"></h1>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div id="phone-details" class="modal-body"></div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </section>

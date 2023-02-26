@@ -1,15 +1,21 @@
-const loadPhones = async (searchText) => {
+const loadPhones = async (searchText, dataLimit) => {
   const url = `https://openapi.programming-hero.com/api/phones?search=${searchText}`;
   const res = await fetch(url);
   const data = await res.json();
-  displayPhones(data.data);
+  displayPhones(data.data, dataLimit);
 };
 
-const displayPhones = (phones) => {
+const displayPhones = (phones, dataLimit) => {
   const phonesContainer = document.getElementById("phones-container");
   phonesContainer.textContent = "";
-  //   display 20 phones only
-  phones = phones.slice(0, 10);
+  //   display 10 phones only
+  const showAll = document.getElementById("show-all");
+  if (dataLimit && phones.length > 10) {
+    phones = phones.slice(0, 10);
+    showAll.classList.remove("d-none");
+  } else {
+    showAll.classList.add("d-none");
+  }
 
   // display no phones found
   const noPhone = document.getElementById("no-found-message");
@@ -33,25 +39,39 @@ const displayPhones = (phones) => {
                   lead-in to additional content. This content is a little bit
                   longer.
                 </p>
+                <button onclick="loadPhoneDetails('${phone.slug}')" href="#" class="btn btn-primary" data-bs-toggle="modal"
+                data-bs-target="#phoneDetailModal">Show Details</button>
             </div>
         </div>
-    `;
+        `;
+
     phonesContainer.appendChild(phoneDiv);
   });
 
   // stop spinner or loader
   toggleSpinner(false);
 };
-
+const processSearch = (dataLimit) => {
+  toggleSpinner(true);
+  const searchField = document.getElementById("search-field");
+  const searchText = searchField.value;
+  loadPhones(searchText, dataLimit);
+};
 // handel search button click
 
 document.getElementById("btn-search").addEventListener("click", function () {
   // start loader
-  toggleSpinner(true);
-  const searchField = document.getElementById("search-field");
-  const searchText = searchField.value;
-  loadPhones(searchText);
+  processSearch(10);
 });
+
+// search input field enter key handler
+document
+  .getElementById("search-field")
+  .addEventListener("keypress", function (e) {
+    if (e.key === "Enter") {
+      processSearch(10);
+    }
+  });
 
 const toggleSpinner = (isLoading) => {
   const loaderSection = document.getElementById("loader");
@@ -62,4 +82,43 @@ const toggleSpinner = (isLoading) => {
   }
 };
 
-// loadPhones();
+// not the best way to load show all
+document.getElementById("btn-show-all").addEventListener("click", function () {
+  processSearch();
+});
+
+const loadPhoneDetails = async (id) => {
+  const url = `https://openapi.programming-hero.com/api/phone/${id}`;
+  const res = await fetch(url);
+  const data = await res.json();
+  displayPhoneDetails(data.data);
+};
+
+const displayPhoneDetails = (phone) => {
+  console.log(phone);
+  const modalTitle = document.getElementById("phoneDetailModalLabel");
+  modalTitle.innerText = phone.name;
+  const phoneDetails = document.getElementById("phone-details");
+  phoneDetails.innerHTML = `
+  <p>Release Date: ${
+    phone.releaseDate ? phone.releaseDate : "No Release Date Found"
+  }</p>
+
+  <p>Memory: ${
+    phone.mainFeatures
+      ? phone.mainFeatures.memory
+      : "No Memory Information Found"
+  }</p>
+  <p>Storage: ${
+    phone.mainFeatures
+      ? phone.mainFeatures.storage
+      : "No Storage Information Found"
+  }</p>
+  <p>Others: ${
+    phone.others ? phone.others.Bluetooth : "No Bluetooth Information"
+  }</p>
+
+  `;
+};
+
+loadPhones("apple");
