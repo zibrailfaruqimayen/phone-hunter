@@ -117,6 +117,11 @@ const displayPhoneDetails = (phone) => {
   <p>Others: ${
     phone.others ? phone.others.Bluetooth : "No Bluetooth Information"
   }</p>
+  <p>Sensor: ${
+    phone.mainFeatures.sensors
+      ? phone.mainFeatures.sensors[0]
+      : "No sensors found"
+  }</p>
 
   `;
 };
